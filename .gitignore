@@ -1,0 +1,56 @@
+# OS and editors
+.DS_Store
+._*
+.idea/
+.vscode/
+*.swp
+*~
+
+# Secrets and local settings
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+/config/local/
+
+# Python environments and generated output
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+htmlcov/
+/build/
+/dist/
+
+# Arduino dependencies, toolchains, and build products
+/.arduino-data/
+/.arduino-cache/
+/arduino-user/
+/arduino-cli.yaml
+/tools/bin/
+*.o
+*.a
+*.elf
+*.hex
+*.bin
+*.map
+
+# Local measurements and model artifacts
+/recordings/
+/data/raw/
+/data/processed/
+/ml/runs/
+/ml/artifacts/
+*.log
+*.log.*
+
+# Private session notes
+/notes/private/
+
+# Local project planning and publication notes
+/PROJECT_LOG.md
+/NEXT_STEPS.md
+/docs/GITHUB.md
