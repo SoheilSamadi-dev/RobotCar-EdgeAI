@@ -7,11 +7,18 @@
 - **Nicla:** timestamped accelerometer/gyroscope samples with explicit units and
   sequence numbers; compact inference is a later experiment.
 - **Pi:** serial connections, recording, manual commands, model inference, and
-  behavior coordination. A local dashboard can be added after the data path works.
+  behavior coordination. A local Wi-Fi dashboard is the preferred untethered
+  controller after the data path works.
 - **Development computer:** dataset review, model training, and offline evaluation.
 
-USB serial is the initial proposal for both boards. Baud rates, sample rates,
-message schemas, device identification, and timing limits remain to be chosen.
+USB serial at 9600 baud is working between the development computer and UNO for
+manual commands. The Pi-to-UNO protocol, Nicla baud and sample rates, device
+identification, and full message schemas remain to be chosen.
+
+The kit IR remote and receiver provide a useful interim handheld controller.
+They require line of sight and careful pin/timer selection around the motor
+shield. The Pi remains the long-term controller because it can provide local
+Wi-Fi control, logging, coordination, and model inference together.
 
 ## First AI experiment
 

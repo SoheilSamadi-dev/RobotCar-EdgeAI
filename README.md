@@ -4,9 +4,13 @@ An experimental rover that combines an Arduino Nicla Sense ME, Raspberry Pi 3,
 ELEGOO UNO R3 Most Complete Starter Kit, and DollaTek four-wheel chassis to
 explore AI running locally on embedded devices.
 
-**Status:** project initialized; hardware integration, firmware, data collection,
-and model development have not started. This repository currently contains
-planning documentation and a source-directory scaffold, not runnable software.
+**Status:** the UNO R3, HW-130 motor shield, four-AA motor supply, and all four
+chassis motors have passed raised-wheel bench tests. The repository includes
+runnable Arduino sketches for individual motor pulses, a combined four-motor
+pulse, and manual serial driving with an automatic stop timeout. Raspberry Pi,
+Nicla sensing, data collection, and model development are the next stages.
+
+![First assembled motor-control setup](media/first-setup.png)
 
 ## Goal
 
@@ -25,20 +29,20 @@ flowchart LR
     N[Nicla: motion sensing] -->|USB serial, proposed| P[Pi: logging, inference, coordination]
     P -->|USB serial, proposed| U[UNO: sensors and motor control]
     S[Ultrasonic sensor and scanning servo] --> U
-    U --> D[Motor driver: suitability pending]
+    U --> D[HW-130 L293D motor shield]
     D --> M[Four chassis motors]
     P --> V[Local dashboard, later]
 ```
 
-The UNO should enforce command timeouts independently of the Pi. Obstacle
-avoidance starts with distance rules; terrain recognition is the first learned
-behavior. Wiring, pin assignments, power design, and message formats are still
-undecided.
+The tested manual-control sketch already enforces a 300 ms command timeout on
+the UNO. Obstacle avoidance starts with distance rules; terrain recognition is
+the first learned behavior. The complete Pi-to-UNO message format, final power
+design, and sensor wiring remain to be chosen.
 
 ## Development milestones
 
-1. Verify hardware, motor-driver capacity, and power arrangements.
-2. Demonstrate manual driving and reliable stopping on communication loss.
+1. Verify motor electrical limits and select the final power arrangement.
+2. Extend the working manual drive test to an untethered controller.
 3. Record labeled motion data across surfaces and separate driving sessions.
 4. Compare a vibration-threshold baseline with a small learned classifier.
 5. Run inference on the Pi and validate speed adaptation at low speed.
@@ -49,8 +53,9 @@ undecided.
 | Path | Purpose |
 |---|---|
 | [docs/HARDWARE.md](docs/HARDWARE.md) | Inventory, evidence, and unresolved checks |
+| [docs/COMPONENTS.md](docs/COMPONENTS.md) | GitHub-ready component inventory and control options |
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Proposed responsibilities and AI evaluation |
-| [firmware/uno/](firmware/uno/README.md) | Future motor and peripheral firmware |
+| [firmware/uno/](firmware/uno/README.md) | Tested motor-control sketches and setup instructions |
 | [firmware/nicla/](firmware/nicla/README.md) | Future sensing and TinyML firmware |
 | [pi/](pi/README.md) | Future robot coordination and logging |
 | [ml/](ml/README.md) | Future training and evaluation |

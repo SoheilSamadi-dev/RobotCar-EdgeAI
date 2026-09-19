@@ -54,3 +54,7 @@ htmlcov/
 /PROJECT_LOG.md
 /NEXT_STEPS.md
 /docs/GITHUB.md
+
+# Downloaded manufacturer documentation and examples
+/docs/vendor/
+/docs/images/
