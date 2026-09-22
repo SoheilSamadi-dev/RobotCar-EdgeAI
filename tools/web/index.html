@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RobotCar Control</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">ROBOTCAR · LOCAL CONTROL</p>
+        <h1>Drive console</h1>
+      </div>
+      <div class="connection" id="connection">
+        <span class="status-dot"></span>
+        <div>
+          <strong id="connection-label">Connecting…</strong>
+          <small id="connection-detail">Waiting for controller</small>
+        </div>
+      </div>
+    </header>
+
+    <section class="notice" role="note">
+      <strong>Bench test mode</strong>
+      Keep the wheels raised. The previous motor tests drew power from Mac USB
+      through the yellow jumper; use this page for communication testing until
+      the separate motor supply is ready.
+    </section>
+
+    <div class="control-grid">
+      <section class="panel keyboard-panel">
+        <div class="panel-heading">
+          <p class="section-number">01</p>
+          <div>
+            <h2>Keyboard</h2>
+            <p id="motion-state">Motors stopped</p>
+          </div>
+        </div>
+
+        <div class="keyboard" aria-label="RobotCar keyboard controls">
+          <div class="key-row">
+            <button class="key curve" data-command="q"><span>Q</span><small>↖ curve</small></button>
+            <button class="key drive" data-command="w"><span>W</span><small>↑ forward</small></button>
+            <button class="key curve" data-command="e"><span>E</span><small>curve ↗</small></button>
+          </div>
+          <div class="key-row">
+            <button class="key turn" data-command="a"><span>A</span><small>↶ pivot</small></button>
+            <button class="key drive" data-command="s"><span>S</span><small>↓ backward</small></button>
+            <button class="key turn" data-command="d"><span>D</span><small>pivot ↷</small></button>
+          </div>
+          <div class="key-row">
+            <button class="key curve" data-command="z"><span>Z</span><small>↙ reverse</small></button>
+            <button class="key stop" data-command="x"><span>X</span><small>stop</small></button>
+            <button class="key curve" data-command="c"><span>C</span><small>reverse ↘</small></button>
+          </div>
+          <div class="key-row utility-row">
+            <button class="key utility" data-command="-"><span>−</span><small>slower</small></button>
+            <button class="key space-key stop" data-command=" "><span>SPACE</span><small>emergency stop</small></button>
+            <button class="key utility" data-command="+"><span>+</span><small>faster</small></button>
+          </div>
+        </div>
+
+        <div class="speed-levels" aria-label="Speed levels">
+          <span>Speed level</span>
+          <div class="number-keys">
+            <button data-command="1">1</button><button data-command="2">2</button>
+            <button data-command="3">3</button><button data-command="4">4</button>
+            <button data-command="5">5</button><button data-command="6">6</button>
+            <button data-command="7">7</button><button data-command="8">8</button>
+            <button data-command="9">9</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel event-panel">
+        <div class="panel-heading event-heading">
+          <div>
+            <p class="section-number">02</p>
+            <div>
+              <h2>Messages</h2>
+              <p>UNO responses, warnings and connection errors</p>
+            </div>
+          </div>
+          <button id="clear-log" class="clear-button">Clear</button>
+        </div>
+        <div id="event-log" class="event-log" role="log" aria-live="polite"></div>
+      </section>
+    </div>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

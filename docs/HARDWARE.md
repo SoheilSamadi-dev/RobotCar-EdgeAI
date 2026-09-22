@@ -9,10 +9,10 @@ The detailed, publishable list is in [COMPONENTS.md](COMPONENTS.md).
 | Item | Evidence | Planned role / open check |
 |---|---|---|
 | Arduino Nicla Sense ME | User-reported | Motion sensing; later compact inference |
-| Raspberry Pi 3 | User-reported | Logging, coordination, initial inference; confirm revision |
+| Raspberry Pi 3 Model B v1.2 with 32 GB microSD | User-confirmed | Wi-Fi control, logging, coordination, and initial inference; inspect the existing OS before changing the card |
 | ELEGOO GE-EL-KIT-001 | User case-label photo: 63 component types | Most Complete/Ultimate kit; label inventory recorded in COMPONENTS.md |
 | DollaTek four-wheel chassis | Listing evidence | Four geared motors and wheels; check motor specifications |
-| Four-AA battery holder and switch | User-confirmed physical inventory | Motor supply candidate; battery chemistry, loaded voltage, and power design pending |
+| Four-AA battery holder and switch | User-confirmed physical inventory | Motor-supply candidate; existing cells did not power the shield through `EXT_PWR` |
 | Slotted encoder discs | Listing evidence | Matching electronic readers not confirmed |
 | L293D IC | Case-label inventory | Separate loose motor driver; current/thermal suitability pending |
 | DollaTek L293D motor drive expansion shield for UNO R3 (ASIN B07DK4NHRW) | User photo and completed tests | Identified as HW-130; M1-M4 and combined pulse tested, while motor current ratings remain unknown |
@@ -74,13 +74,17 @@ The detailed, publishable list is in [COMPONENTS.md](COMPONENTS.md).
   an established Pi or four-motor supply.
 - The user connected the four chassis motors using the servo end as the front:
   M1 front left, M2 rear left, M3 front right, M4 rear right. The yellow `PWR`
-  shunt remained removed; the UNO used USB and the four-AA holder supplied
-  `EXT_PWR`. Each motor and shield output was tested individually with the
+  shunt was installed during every successful motor test. A later controlled
+  check showed that `four_motor_pulse` worked with or without cells in the AA
+  holder only while this jumper was installed. This confirms that those tests
+  powered the motor rail through UNO USB rather than through `EXT_PWR`. Each
+  motor and shield output was tested individually with the
   wheels raised. All turned in the forward direction and stopped after a
   150 ms pulse at PWM 255. At PWM 100 for 250 ms, M1 made a sound but did not
   start, even with the wheel removed. The combined four-motor load has not
   been tested for sustained operation. A first 150 ms combined pulse at PWM
-  255 moved all four motors with the chassis raised. The user confirmed
+  255 moved all four motors with the chassis raised, powered through USB. The
+  user confirmed
   automatic stopping, no UNO reset, no unusual heat or smell, and no very
   uneven behavior during that pulse.
 - Encoder discs alone cannot provide electronic speed or distance readings.

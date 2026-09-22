@@ -17,10 +17,10 @@ piece is still present until the compartments are individually checked.
 | Yellow geared DC motors | 4 | Tested on M1-M4 |
 | Wheels | 4 | Installed; all turn forward |
 | Slotted encoder discs | 4 | Installed; reader sensors not identified |
-| Four-AA holder with switch | 1 | Supplies shield `EXT_PWR` during tests |
+| Four-AA holder with switch | 1 | Present, but has not yet powered the shield successfully through `EXT_PWR` |
 | Micro servo mounted on chassis | 1 | Visible in chassis photo; untested |
 | Arduino Nicla Sense ME | 1 | User-owned; planned motion sensing |
-| Raspberry Pi 3 | 1 | User-owned; exact revision and power supply pending |
+| Raspberry Pi 3 Model B v1.2 with 32 GB microSD | 1 | Confirmed; Debian 13 cleaned for the rover and renamed `robotcar`; mobile power supply pending |
 
 ## ELEGOO kit contents shown on the user's case label
 

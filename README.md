@@ -4,11 +4,15 @@ An experimental rover that combines an Arduino Nicla Sense ME, Raspberry Pi 3,
 ELEGOO UNO R3 Most Complete Starter Kit, and DollaTek four-wheel chassis to
 explore AI running locally on embedded devices.
 
-**Status:** the UNO R3, HW-130 motor shield, four-AA motor supply, and all four
-chassis motors have passed raised-wheel bench tests. The repository includes
+**Status:** the UNO R3, HW-130 motor shield, and all four chassis motors have
+passed raised-wheel bench tests using USB motor power through the fitted yellow
+jumper. The separate four-AA motor path did not power the shield and remains to
+be diagnosed with fresh matched batteries and a multimeter. The repository
+includes
 runnable Arduino sketches for individual motor pulses, a combined four-motor
 pulse, and manual serial driving with an automatic stop timeout. Raspberry Pi,
-Nicla sensing, data collection, and model development are the next stages.
+Nicla sensing, data collection, and model development are the next stages. The
+target Pi–UNO architecture and its separate power paths are now selected.
 
 ![First assembled motor-control setup](media/first-setup.png)
 
@@ -22,27 +26,31 @@ running a compact classifier directly on the Nicla (TinyML).
 Training can happen on a development computer; the deployed robot should make
 its driving decisions locally without a cloud connection.
 
-## Proposed architecture
+## Target architecture
 
 ```mermaid
 flowchart LR
-    N[Nicla: motion sensing] -->|USB serial, proposed| P[Pi: logging, inference, coordination]
-    P -->|USB serial, proposed| U[UNO: sensors and motor control]
-    S[Ultrasonic sensor and scanning servo] --> U
+    C[Phone or laptop] <-->|Local Wi-Fi| P[Pi: dashboard, logging, AI]
+    N[Nicla: motion sensing] -->|USB serial| P
+    P -->|USB serial commands| U[UNO: motor control and watchdog]
+    S[Ultrasonic sensor and scanning servo] <--> U
     U --> D[HW-130 L293D motor shield]
     D --> M[Four chassis motors]
-    P --> V[Local dashboard, later]
 ```
 
-The tested manual-control sketch already enforces a 300 ms command timeout on
-the UNO. Obstacle avoidance starts with distance rules; terrain recognition is
-the first learned behavior. The complete Pi-to-UNO message format, final power
-design, and sensor wiring remain to be chosen.
+The target architecture uses separate power paths: a USB power bank powers the
+Pi, the Pi powers and communicates with the UNO over USB, and a verified motor
+battery will power the shield's `EXT_PWR` input with the yellow `PWR` jumper
+removed. The UNO
+enforces the 300 ms command timeout independently of the Pi. See the
+[complete architecture](docs/ARCHITECTURE.md) for interfaces, safety rules, and
+the build sequence.
 
 ## Development milestones
 
 1. Verify motor electrical limits and select the final power arrangement.
-2. Extend the working manual drive test to an untethered controller.
+2. Move the tested Mac hold-to-drive web controller onto the Pi for untethered
+   control.
 3. Record labeled motion data across surfaces and separate driving sessions.
 4. Compare a vibration-threshold baseline with a small learned classifier.
 5. Run inference on the Pi and validate speed adaptation at low speed.
@@ -54,11 +62,13 @@ design, and sensor wiring remain to be chosen.
 |---|---|
 | [docs/HARDWARE.md](docs/HARDWARE.md) | Inventory, evidence, and unresolved checks |
 | [docs/COMPONENTS.md](docs/COMPONENTS.md) | GitHub-ready component inventory and control options |
-| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Proposed responsibilities and AI evaluation |
+| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Target system, power, interfaces, safety, and build sequence |
+| [docs/PI_SETUP.md](docs/PI_SETUP.md) | Confirmed Pi hardware, safe inspection, and reusable deployment lessons |
 | [firmware/uno/](firmware/uno/README.md) | Tested motor-control sketches and setup instructions |
 | [firmware/nicla/](firmware/nicla/README.md) | Future sensing and TinyML firmware |
 | [pi/](pi/README.md) | Future robot coordination and logging |
 | [ml/](ml/README.md) | Future training and evaluation |
+| [tools/](tools/README.md) | Tested Mac web controller and setup instructions |
 
 ## Related work
 
