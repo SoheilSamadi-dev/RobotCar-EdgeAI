@@ -53,3 +53,14 @@ stop command and closes the serial port.
 
 Do not leave Arduino Serial Monitor open at the same time. Only one program can
 own the UNO serial port.
+
+## Next: Pi-hosted control
+
+As of 2026-09-28, the user has confirmed motor operation through the Pi's USB
+serial connection to the UNO. The next step is to reuse this controller and
+its existing web assets on the Pi, with browser access from the local network.
+The current loopback binding does not provide that access yet.
+
+Follow the [Pi deployment checklist](../docs/PI_SETUP.md#next-milestone-reuse-the-existing-web-gui-on-the-pi)
+for listen-address configuration, stable Linux serial paths, headless startup,
+and stopping/power validation. This is planned work, not a completed deployment.

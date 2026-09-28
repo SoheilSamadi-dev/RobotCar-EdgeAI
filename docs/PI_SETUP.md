@@ -141,3 +141,68 @@ Next:
 
 The target system and power arrangement are documented in
 [ARCHITECTURE.md](ARCHITECTURE.md).
+
+## 2026-09-28 checkpoint: motor control from the Pi
+
+The user confirmed that the motor test through the Pi worked without problems.
+The control path was Mac SSH session to Pi, then USB serial from Pi to UNO.
+This is a user-reported functional test, not a measured endurance or power test.
+
+During setup:
+
+- The UNO appeared under `/dev/serial/by-id/`, pointing to `/dev/ttyACM0`.
+  Use its stable by-id path for deployment; the numbered port can change.
+- Debian's `python3-serial` package was already installed (3.5-2).
+- The serial terminal used 9600 baud with the existing manual-control firmware.
+- Wi-Fi was initially disconnected with no saved wireless profile shown by
+  NetworkManager. A profile was created and automatic connection enabled.
+  The user subsequently reported completing the Ethernet-disconnection check.
+- Earlier power diagnostics showed undervoltage and throttling. `0x50000`
+  records earlier undervoltage/throttling; `0x50005` also indicates both are
+  active at the time of the reading. No post-motor-test reading was supplied.
+
+The test instructions specified raised wheels, the yellow `PWR` jumper removed,
+separate motor power at `EXT_PWR`, and a short movement command. The final
+confirmation did not independently document the physical power arrangement,
+each direction, stop timing, or disconnect behavior. Keep those checks open.
+The earlier four-AA supply issue is not considered resolved by this report.
+
+### Repeat the serial connection check
+
+With motor power off and the UNO connected to the Pi by USB:
+
+```bash
+ls -l /dev/serial/by-id/
+python3 -m serial.tools.miniterm /dev/serial/by-id/YOUR_UNO_PORT 9600
+```
+
+Replace `YOUR_UNO_PORT` with the actual listed device name. Wait for the UNO to
+start, then send `h`, `?`, and `x` to check help, stopped status, and explicit
+stop. Exit miniterm with Ctrl+]. Close it before starting another serial owner.
+The manual-control sketch releases motors after 300 ms without another motion
+command; verify that behavior on hardware before continuous GUI control.
+
+### Next milestone: reuse the existing web GUI on the Pi
+
+Reuse `tools/mac_web_controller.py` and `tools/web/`; do not build a second UI.
+The current server binds to `127.0.0.1`, so it is not yet directly reachable
+from another device over Wi-Fi.
+
+1. Adapt the controller for Pi deployment: Linux stable serial paths, explicit
+   serial-port selection, headless startup, and configurable listen address.
+2. Install its dependencies in a Pi virtual environment and transfer the
+   controller and web assets. Keep Wi-Fi credentials and device-specific
+   settings outside Git.
+3. Connect the existing browser UI to the Pi-hosted server on the local network;
+   retain the current Mac workflow and avoid public internet exposure.
+4. Preserve the 100 ms movement heartbeat and independent UNO 300 ms timeout.
+   Verify release, explicit stop, tab close, Wi-Fi loss, server termination,
+   and USB disconnect with wheels raised. Check competing browser clients.
+5. Record power readings before and during the test and confirm the motor
+   supply is separate from Pi/UNO USB power.
+6. Only after interactive validation, install the controller as a boot service
+   that starts with motors stopped and has sole ownership of the serial port.
+
+No Pi web-controller deployment or service installation was performed at this
+checkpoint. Motor ratings, sustained-load behavior, and power reliability remain
+open hardware checks.

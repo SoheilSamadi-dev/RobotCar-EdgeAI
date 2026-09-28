@@ -9,6 +9,16 @@ The confirmed Pi hardware, safe inspection steps, and reusable lessons from the
 earlier vibration-monitor project are in
 [docs/PI_SETUP.md](../docs/PI_SETUP.md).
 
+## Current checkpoint (2026-09-28)
+
+The user successfully tested motors through the Pi-to-UNO USB serial link at
+9600 baud. This confirms the manual control path; it does not yet validate a
+Pi-hosted GUI, boot service, or sustained power stability.
+
+Next, reuse the existing `tools/mac_web_controller.py` and `tools/web/` UI on
+the Pi. The server currently listens only on loopback. The deployment and
+validation checklist is in [PI_SETUP.md](../docs/PI_SETUP.md#next-milestone-reuse-the-existing-web-gui-on-the-pi).
+
 The first Pi application will provide:
 
 1. Stable identification and connection of the UNO USB serial device.

@@ -96,6 +96,15 @@ The detailed, publishable list is in [COMPONENTS.md](COMPONENTS.md).
 - The tested motor mapping is documented. A complete Pi, Nicla, and sensor
   wiring diagram has not yet been designed.
 
+## 2026-09-28 Pi motor test
+
+The user reported successful motor operation through the Pi-to-UNO USB serial
+link with no problems during the test. Earlier Pi undervoltage events remain
+relevant: no new power measurement, motor-supply voltage, or explicit jumper
+position was supplied with that confirmation. The earlier AA supply-path issue
+and sustained-load checks therefore remain unresolved. See
+[the Pi checkpoint](PI_SETUP.md#2026-09-28-checkpoint-motor-control-from-the-pi).
+
 ## References
 
 - [User's ELEGOO listing](https://www.amazon.de/dp/B01IHCCKKK)

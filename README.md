@@ -4,15 +4,17 @@ An experimental rover that combines an Arduino Nicla Sense ME, Raspberry Pi 3,
 ELEGOO UNO R3 Most Complete Starter Kit, and DollaTek four-wheel chassis to
 explore AI running locally on embedded devices.
 
-**Status:** the UNO R3, HW-130 motor shield, and all four chassis motors have
-passed raised-wheel bench tests using USB motor power through the fitted yellow
-jumper. The separate four-AA motor path did not power the shield and remains to
-be diagnosed with fresh matched batteries and a multimeter. The repository
-includes
-runnable Arduino sketches for individual motor pulses, a combined four-motor
-pulse, and manual serial driving with an automatic stop timeout. Raspberry Pi,
-Nicla sensing, data collection, and model development are the next stages. The
-target Pi–UNO architecture and its separate power paths are now selected.
+**Status (2026-09-28):** the user successfully tested motor control from the
+Raspberry Pi over USB to the UNO, with no problems reported during that test.
+Wi-Fi was configured with automatic reconnection. The existing Mac
+hold-to-drive web GUI is tested; the next milestone is to run its serial bridge
+and web server on the Pi and control the car from a browser over local Wi-Fi.
+See [Pi setup and test results](docs/PI_SETUP.md) for the current checkpoint.
+
+Power validation remains open: earlier tests showed Pi undervoltage, and the
+latest successful motor test did not include fresh power readings or an explicit
+confirmation of motor-supply routing. The separate motor supply, jumper state,
+loaded voltage, and sustained operation still need verification.
 
 ![First assembled motor-control setup](media/first-setup.png)
 
