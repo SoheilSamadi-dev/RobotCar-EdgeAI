@@ -60,5 +60,5 @@ sensing and battery monitoring are also future extensions.
 
 ## License
 
-A license has not yet been selected. No open-source license is granted by this
-repository at this stage.
+This project is licensed under the [MIT License](LICENSE).
+Third-party dependencies retain their respective licenses.
