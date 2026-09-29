@@ -1,31 +1,13 @@
-# UNO Firmware
+# UNO motor-control firmware
 
-The UNO is the motor-control and immediate-stop layer in the agreed
-[target architecture](../../docs/ARCHITECTURE.md).
+Upload [manual_serial_control.ino](manual_serial_control/manual_serial_control.ino)
+for the current rover. This is the only required sketch. Follow the
+[setup guide](../../docs/GETTING_STARTED.md#3-upload-the-uno-firmware) for library
+installation, board selection, upload, and initial checks.
 
-The first bench sketch, [one_motor_pulse](one_motor_pulse/one_motor_pulse.ino),
-targets the L293D/74HC595 V1-style shield layout. It keeps the selected motor
-output released until the USB serial monitor sends `p`, then runs that output
-forward at PWM 255 for 150 ms and releases it. `kMotorPort` is currently set
-to 4, matching the last individual output tested. It uses the installed
-**Adafruit Motor Shield R4 Compatible**
-library, whose `AFMotor_R4.h` API targets the V1-style shield layout. The user
-confirmed all four motors and all four outputs work individually with wheels
-raised.
-
-The [four_motor_pulse](four_motor_pulse/four_motor_pulse.ino) bench sketch
-keeps M1–M4 released until the USB serial monitor sends `p`. It then drives all
-four outputs forward at PWM 255 for 150 ms and releases every output. The
-raised-wheel combined test passed: all four motors moved, stopped automatically,
-and caused no observed UNO reset, unusual heat, smell, or large speed mismatch.
-
-The [manual_serial_control](manual_serial_control/manual_serial_control.ino)
-sketch provides a keyboard-ready command protocol over USB serial. It starts
-with all motors released, stops on an unknown command, and releases every motor
-after 300 ms without a new motion command. Repeated motion commands are required
-for continuous movement. Forward, backward, pivoting, curved movement, speed
-commands, stop-on-release, and the browser heartbeat were tested through the
-Mac web controller with the wheels raised.
+The sketch starts stopped and releases all motors after 300 ms without a
+movement command. The Pi web controller supplies repeated commands while a
+control is held.
 
 ### Manual-control commands
 
@@ -50,38 +32,10 @@ the controller program, USB connection, or network connection fails.
 
 The Arduino IDE Serial Monitor can send individual commands for bench checks,
 but it does not provide real-time key-down and key-up events. The
-[Mac web controller](../../tools/mac_web_controller.py) provides
+[shared web controller](../../tools/web_controller.py) provides
 hold-to-drive control and sends the required heartbeat.
 
-## Build and upload
-
-1. Install the Arduino IDE and its **Arduino AVR Boards** support.
-2. Install **Adafruit Motor Shield R4 Compatible** from Library Manager. These
-   sketches use `AFMotor_R4.h`; the Adafruit Motor Shield V2 library controls a
-   different shield design.
-3. Select **Arduino Uno** and the serial port that appears when the UNO is
-   connected.
-4. Keep the shield's yellow `PWR` jumper removed. Power the UNO through USB.
-   For a powered motor test, connect a verified separate motor battery to
-   `EXT_PWR`, observing its `+` and `GND` labels. The motor pack contains four Duracell alkaline AA batteries in series
-   (6 V nominal); loaded voltage remains unmeasured.
-5. Raise the wheels before uploading or sending a motion command. Open Serial
-   Monitor at **9600 baud** for all three sketches.
-
-Motor mapping, with the servo end of the chassis treated as the front:
-
-| Shield output | Motor position |
-|---|---|
-| M1 | Front left |
-| M2 | Rear left |
-| M3 | Front right |
-| M4 | Rear right |
-
-Future rover firmware will accept commands from the Raspberry Pi and add
-peripheral readings. Confirm the unknown motor ratings and final power design
-before sustained or loaded driving.
-
-## Tuned controls (2026-09-29)
+## PWM and curve settings
 
 Default and minimum drive PWM are 195; maximum is 255. Levels 1–9 select
 195, 202, 210, 217, 225, 232, 240, 247, and 255. This is motor duty, not measured
@@ -89,7 +43,7 @@ vehicle speed. Stop still releases all motors.
 
 Send `@c75` followed by newline to set curve strength to 75 percent. Accepted
 values are integers 0–100. Inner PWM is `base * (100 - strength) / 100`, with
-integer truncation. At 0 both sides match; 50 reproduces the old curve; at 100
+integer truncation. At 0 both sides match; 50 halves the inner PWM; at 100
 the inside motors are released. Default is 75. The reduced inside PWM may be
 below 195 and may stall under load; the base minimum applies to the outside
 wheels. Grip and load determine actual radius. Settings reset on UNO restart.

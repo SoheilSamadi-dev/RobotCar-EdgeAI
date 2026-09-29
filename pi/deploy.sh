@@ -14,14 +14,14 @@ trap 'rm -f -- "$archive"' EXIT
 # Check prerequisites first; this does not open the UNO port.
 ssh "$target" 'python3 -c "import serial; assert hasattr(serial, \"Serial\"), \"pyserial is required\""'
 COPYFILE_DISABLE=1 tar -czf "$archive" -C "$project_dir" \
-  tools/mac_web_controller.py tools/requirements-web.txt \
+  tools/web_controller.py tools/requirements-web.txt \
   tools/web/index.html tools/web/app.js tools/web/style.css pi/run.sh pi/install-service.sh
 ssh "$target" "mkdir -p robotcar/releases/$release"
 scp "$archive" "$target:robotcar/releases/$release/runtime.tar.gz"
 ssh "$target" "set -eu
 cd robotcar/releases/$release
 tar -xzf runtime.tar.gz
-python3 -m py_compile tools/mac_web_controller.py
+python3 -m py_compile tools/web_controller.py
 cd ../..
 if [ -e current ] && [ ! -L current ]; then
   echo 'robotcar/current exists and is not a symlink; leaving it unchanged.' >&2

@@ -8,7 +8,7 @@ from unittest.mock import patch, MagicMock
 from http.client import HTTPConnection
 from pathlib import Path
 
-spec = importlib.util.spec_from_file_location('controller', Path(__file__).parents[1] / 'tools/mac_web_controller.py')
+spec = importlib.util.spec_from_file_location('controller', Path(__file__).parents[1] / 'tools/web_controller.py')
 controller = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(controller)
 

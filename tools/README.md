@@ -1,68 +1,29 @@
-# Mac Web Controller
+# Shared web controller
 
-The [Mac web controller](mac_web_controller.py) connects directly to the UNO
-over USB and opens a local control page. The page detects key press and release
-events, highlights the active key, sends movement commands every 100 ms while
-a movement key is held, and sends `x` immediately when it is released. This
-works with the 300 ms watchdog in
-[manual_serial_control.ino](../firmware/uno/manual_serial_control/manual_serial_control.ino).
+[web_controller.py](web_controller.py) is the active server for the Pi and
+optional direct USB operation on a Mac. Browser assets live in `web/` and the
+runtime dependency is listed in `requirements-web.txt`.
 
-The page and controller listen only on the Mac itself at
-`http://127.0.0.1:8765`; they are not exposed to the local network.
+For the normal Pi/Wi-Fi build, use the [setup guide](../docs/GETTING_STARTED.md).
+No separate Mac controller is required.
 
-## One-time setup
+## Optional direct USB operation
 
-Open Terminal and run:
+This can help diagnose the UNO without the Pi. With Python 3.10+ on the Mac,
+run from the project root:
 
 ```bash
-cd RobotCar-EdgeAI
 python3 -m venv .venv
 source .venv/bin/activate
 python3 -m pip install -r tools/requirements-web.txt
+python3 tools/web_controller.py
 ```
 
-## Run
+First upload the current UNO sketch, close Serial Monitor, and connect the UNO
+directly to the Mac. Keep motor power off until the page reports connected and
+the expected configuration. Use the same wiring and raised-wheel checks as the
+setup guide. The server opens `http://127.0.0.1:8765` and defaults to loopback.
 
-1. Upload `manual_serial_control.ino` to the UNO.
-2. Close Arduino Serial Monitor so it releases the serial port.
-3. Keep the wheels raised for the first powered test.
-4. Connect the UNO directly to the Mac by USB.
-5. In Terminal, run:
-
-```bash
-cd RobotCar-EdgeAI
-source .venv/bin/activate
-python3 tools/mac_web_controller.py
-```
-
-The controller finds `/dev/cu.usbmodem...` automatically and opens the web
-page. If multiple USB serial devices are connected, select the UNO explicitly:
-
-```bash
-python3 tools/mac_web_controller.py --port /dev/cu.usbmodem101
-```
-
-Keep the control page active while driving. Hold `W`, `A`, `S`, or `D` and
-release the key to stop. `Q`, `E`, `Z`, and `C` select curved movements.
-The on-screen controls also work with a mouse or trackpad. `X` or Space sends
-an immediate stop.
-
-The Messages panel shows serial connection events, commands, UNO responses,
-warnings, and errors. Closing the controller with `Control-C` sends a final
-stop command and closes the serial port.
-
-Do not leave Arduino Serial Monitor open at the same time. Only one program can
-own the UNO serial port.
-
-## Pi-hosted control
-
-The same controller now supports Linux serial devices and a configurable
-`--host` address. Use [the Pi deployment guide](../pi/README.md) to copy the
-runtime files and launch the server for local Wi-Fi access. The Mac defaults
-remain loopback-only. `--no-browser` supports headless operation.
-
-Control is granted to one browser at a time through an expiring token. The
-browser continues the existing 100 ms heartbeat; delayed/reordered commands
-are rejected and release invalidates the token. X/Space stops any active
-session. A lost connection requires a fresh press rather than auto-resume.
-After changing server or web files, restart the server and reload the page.
+If automatic serial selection is ambiguous, add `--port` followed by your
+actual UNO device path. Use `--help` to list options. Ctrl+C stops the controller
+and releases the serial port. Turn motor power off after use.

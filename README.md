@@ -1,84 +1,62 @@
-# CarEdgeAI
+# RobotCar EdgeAI
 
-An experimental rover that combines an Arduino Nicla Sense ME, Raspberry Pi 3,
-ELEGOO UNO R3 Most Complete Starter Kit, and DollaTek four-wheel chassis to
-explore AI running locally on embedded devices.
+Build a four-wheel rover controlled from a browser over local Wi-Fi. A Raspberry
+Pi hosts the controls and sends USB commands to an Arduino UNO, which drives
+four motors through an HW-130 L293D shield.
 
-**Status (2026-09-28):** the user successfully tested motor control from the
-Raspberry Pi over USB to the UNO, with no problems reported during that test.
-Wi-Fi was configured with automatic reconnection. The existing Mac
-hold-to-drive web GUI is tested; the next milestone is to run its serial bridge
-and web server on the Pi and control the car from a browser over local Wi-Fi.
-The Pi deployment scripts and controller adaptations are now implemented;
-[deployment and physical GUI testing](pi/README.md) remain pending.
-See [Pi setup and test results](docs/PI_SETUP.md) for the current checkpoint.
+**Start here: [step-by-step setup guide](docs/GETTING_STARTED.md).** It covers
+hardware connections, firmware upload, Pi setup, deployment, and first driving
+tests. No previous project installation is required.
 
-Power validation remains open: earlier tests showed Pi undervoltage, and the
-latest successful motor test did not include fresh power readings or an explicit
-confirmation of motor-supply routing. The separate motor supply, jumper state,
-loaded voltage, and sustained operation still need verification.
+## What you can build today
 
-![First assembled motor-control setup](media/first-setup.png)
+- Forward, reverse, pivot, and curved movement using keyboard or on-screen controls.
+- Hold-to-drive operation, adjustable PWM and curve strength, and explicit stop.
+- One active browser controller at a time, with connection status and messages.
+- A UNO watchdog that releases the motors after 300 ms without movement commands.
+- Optional automatic startup on the Pi.
 
-## Goal
+Pi/browser driving with the current controls has been reported working.
+Automatic-startup installation and reboot verification remain unconfirmed on
+hardware. Detailed disconnect tests, motor electrical limits, and sustained
+power reliability remain open; follow the guide's checks on your own build.
+This is an experimental, manually controlled rover. There is no obstacle
+avoidance, battery telemetry, or autonomous driving.
 
-Build a manually controlled rover, collect labeled motion data, and train a small
-model to recognize driving surfaces or unusual vibration. Run inference on the
-Pi first and use validated predictions to adjust speed or stop. Later, explore
-running a compact classifier directly on the Nicla (TinyML).
+## Required hardware
 
-Training can happen on a development computer; the deployed robot should make
-its driving decisions locally without a cloud connection.
-
-## Target architecture
+Raspberry Pi 3 Model B with microSD and a suitable power supply; UNO R3;
+HW-130 L293D V1-style motor shield; four-motor chassis; separate motor battery;
+USB data cable; and a computer for uploading firmware and deploying files.
+See [hardware and wiring](docs/HARDWARE.md) for the complete list and motor map.
+A Nicla board and the other starter-kit sensors are not needed for this stage.
 
 ```mermaid
 flowchart LR
-    C[Phone or laptop] <-->|Local Wi-Fi| P[Pi: dashboard, logging, AI]
-    N[Nicla: motion sensing] -->|USB serial| P
-    P -->|USB serial commands| U[UNO: motor control and watchdog]
-    S[Ultrasonic sensor and scanning servo] <--> U
-    U --> D[HW-130 L293D motor shield]
-    D --> M[Four chassis motors]
+    B[Phone or laptop browser] <-->|Local Wi-Fi| P[Raspberry Pi]
+    P <-->|USB serial| U[UNO R3]
+    U --> S[HW-130 motor shield]
+    S --> M[Four motors]
 ```
-
-The target architecture uses separate power paths: a USB power bank powers the
-Pi, the Pi powers and communicates with the UNO over USB, and a verified motor
-battery will power the shield's `EXT_PWR` input with the yellow `PWR` jumper
-removed. The UNO
-enforces the 300 ms command timeout independently of the Pi. See the
-[complete architecture](docs/ARCHITECTURE.md) for interfaces, safety rules, and
-the build sequence.
-
-## Development milestones
-
-1. Verify motor electrical limits and select the final power arrangement.
-2. Move the tested Mac hold-to-drive web controller onto the Pi for untethered
-   control.
-3. Record labeled motion data across surfaces and separate driving sessions.
-4. Compare a vibration-threshold baseline with a small learned classifier.
-5. Run inference on the Pi and validate speed adaptation at low speed.
-6. Explore Nicla inference, additional sensors, and a local dashboard.
 
 ## Repository guide
 
 | Path | Purpose |
 |---|---|
-| [docs/HARDWARE.md](docs/HARDWARE.md) | Inventory, evidence, and unresolved checks |
-| [docs/COMPONENTS.md](docs/COMPONENTS.md) | GitHub-ready component inventory and control options |
-| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Target system, power, interfaces, safety, and build sequence |
-| [docs/PI_SETUP.md](docs/PI_SETUP.md) | Confirmed Pi hardware, safe inspection, and reusable deployment lessons |
-| [firmware/uno/](firmware/uno/README.md) | Tested motor-control sketches and setup instructions |
-| [firmware/nicla/](firmware/nicla/README.md) | Future sensing and TinyML firmware |
-| [pi/](pi/README.md) | Pi web-controller deployment and validation |
-| [ml/](ml/README.md) | Future training and evaluation |
-| [tools/](tools/README.md) | Tested Mac web controller and setup instructions |
+| [Setup guide](docs/GETTING_STARTED.md) | Complete path from hardware to browser control |
+| [Hardware](docs/HARDWARE.md) | Required parts, wiring, and power checks |
+| [Pi preparation](docs/PI_SETUP.md) | OS prerequisites, SSH, Wi-Fi, and serial access |
+| [Pi operation](pi/README.md) | Startup service, updates, and troubleshooting |
+| [UNO firmware](firmware/uno/README.md) | The one required sketch and serial protocol |
+| [Controller](tools/README.md) | Shared web server and optional direct USB use |
+| [Architecture](docs/ARCHITECTURE.md) | How the current implementation works |
+| [Development checks](tests/README.md) | Software tests without physical hardware |
 
-## Related work
+## Future work
 
-The local Embedded-vibration-monitor project provides relevant experience with
-Nicla motion sensing and a Raspberry Pi gateway. Its application thresholds,
-private deployment settings, and validation results do not transfer to this rover.
+Nicla motion sensing, labeled recordings, surface classification, and local
+inference are planned. No rover dataset or trained model is included. Obstacle
+sensing and battery monitoring are also future extensions.
 
 ## License
 
