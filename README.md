@@ -9,6 +9,8 @@ Raspberry Pi over USB to the UNO, with no problems reported during that test.
 Wi-Fi was configured with automatic reconnection. The existing Mac
 hold-to-drive web GUI is tested; the next milestone is to run its serial bridge
 and web server on the Pi and control the car from a browser over local Wi-Fi.
+The Pi deployment scripts and controller adaptations are now implemented;
+[deployment and physical GUI testing](pi/README.md) remain pending.
 See [Pi setup and test results](docs/PI_SETUP.md) for the current checkpoint.
 
 Power validation remains open: earlier tests showed Pi undervoltage, and the
@@ -68,7 +70,7 @@ the build sequence.
 | [docs/PI_SETUP.md](docs/PI_SETUP.md) | Confirmed Pi hardware, safe inspection, and reusable deployment lessons |
 | [firmware/uno/](firmware/uno/README.md) | Tested motor-control sketches and setup instructions |
 | [firmware/nicla/](firmware/nicla/README.md) | Future sensing and TinyML firmware |
-| [pi/](pi/README.md) | Future robot coordination and logging |
+| [pi/](pi/README.md) | Pi web-controller deployment and validation |
 | [ml/](ml/README.md) | Future training and evaluation |
 | [tools/](tools/README.md) | Tested Mac web controller and setup instructions |
 

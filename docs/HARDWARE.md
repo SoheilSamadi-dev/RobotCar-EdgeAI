@@ -12,7 +12,7 @@ The detailed, publishable list is in [COMPONENTS.md](COMPONENTS.md).
 | Raspberry Pi 3 Model B v1.2 with 32 GB microSD | User-confirmed | Wi-Fi control, logging, coordination, and initial inference; inspect the existing OS before changing the card |
 | ELEGOO GE-EL-KIT-001 | User case-label photo: 63 component types | Most Complete/Ultimate kit; label inventory recorded in COMPONENTS.md |
 | DollaTek four-wheel chassis | Listing evidence | Four geared motors and wheels; check motor specifications |
-| Four-AA battery holder and switch | User-confirmed physical inventory | Motor-supply candidate; existing cells did not power the shield through `EXT_PWR` |
+| Four-AA battery holder and switch | User-confirmed physical inventory | Four Duracell alkaline AA cells in series (6 V nominal), connected to `EXT_PWR` |
 | Slotted encoder discs | Listing evidence | Matching electronic readers not confirmed |
 | L293D IC | Case-label inventory | Separate loose motor driver; current/thermal suitability pending |
 | DollaTek L293D motor drive expansion shield for UNO R3 (ASIN B07DK4NHRW) | User photo and completed tests | Identified as HW-130; M1-M4 and combined pulse tested, while motor current ratings remain unknown |
@@ -69,9 +69,9 @@ The detailed, publishable list is in [COMPONENTS.md](COMPONENTS.md).
   jumper links it to the UNO supply path. It is not a complete circuit or
   polarity check.
 - The saved reseller listing and the user's latest physical check agree on four
-  AA cells. The earlier AAA report was corrected. Cell chemistry, loaded
-  voltage, and pack current capability remain unknown; the AA holder is not
-  an established Pi or four-motor supply.
+  AA cells. The user confirms Duracell alkaline cells in series (6 V nominal).
+  Loaded voltage and pack current capability remain unmeasured; this is the
+  motor supply, not the Pi supply.
 - The user connected the four chassis motors using the servo end as the front:
   M1 front left, M2 rear left, M3 front right, M4 rear right. The yellow `PWR`
   shunt was installed during every successful motor test. A later controlled
@@ -120,3 +120,9 @@ and sustained-load checks therefore remain unresolved. See
 
 Product screenshots supplied on 2026-09-15 support identification, not a complete
 physical inventory. They are not copied into this repository.
+
+## Latest supply clarification (2026-09-29)
+
+The confirmed motor supply at EXT_PWR is **four Duracell alkaline AA
+batteries in series**, nominally **6 V** (4 × 1.5 V). Loaded voltage remains
+unmeasured. See [battery monitoring](BATTERY_MONITORING.md).

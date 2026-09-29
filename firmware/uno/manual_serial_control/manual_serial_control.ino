@@ -11,9 +11,10 @@ AF_DCMotor rearLeft(2);
 AF_DCMotor frontRight(3);
 AF_DCMotor rearRight(4);
 
-constexpr uint8_t kDefaultSpeed = 255;  // PWM range: 0..255
-constexpr uint8_t kMinimumSpeed = 80;
-constexpr uint8_t kSpeedStep = 15;
+constexpr uint8_t kDefaultSpeed = 195;  // PWM range: 0..255
+constexpr uint8_t kMinimumSpeed = 195;
+constexpr uint8_t kSpeedStep = 5;
+constexpr uint8_t kDefaultCurveStrength = 75;
 constexpr unsigned long kCommandTimeoutMs = 300;
 
 enum Motion : uint8_t {
@@ -29,6 +30,7 @@ enum Motion : uint8_t {
 };
 
 uint8_t driveSpeed = kDefaultSpeed;
+uint8_t curveStrength = kDefaultCurveStrength;
 Motion currentMotion = STOPPED;
 unsigned long lastMotionCommandMs = 0;
 
@@ -78,8 +80,10 @@ const __FlashStringHelper *motionName(Motion motion) {
 }
 
 void applyMotion(Motion motion) {
-  // Curves run the inside wheels at half the selected speed.
-  const uint8_t slowSpeed = driveSpeed / 2;
+  // Curve strength reduces inside-wheel PWM; it is not a measured radius.
+  // The 195 minimum applies to the base/outer PWM, not the reduced inside side.
+  const uint8_t slowSpeed =
+      static_cast<uint16_t>(driveSpeed) * (100 - curveStrength) / 100;
   uint8_t leftSpeed = driveSpeed;
   uint8_t rightSpeed = driveSpeed;
   uint8_t leftDirection = FORWARD;
@@ -131,15 +135,15 @@ void applyMotion(Motion motion) {
 
   setLeftSpeed(leftSpeed);
   setRightSpeed(rightSpeed);
-  runLeft(leftDirection);
-  runRight(rightDirection);
+  runLeft(leftSpeed == 0 ? RELEASE : leftDirection);
+  runRight(rightSpeed == 0 ? RELEASE : rightDirection);
   currentMotion = motion;
-  lastMotionCommandMs = millis();
 }
 
 void commandMotion(Motion requestedMotion) {
   const bool changed = requestedMotion != currentMotion;
   applyMotion(requestedMotion);
+  lastMotionCommandMs = millis();
 
   // Repeated commands act as a quiet heartbeat, avoiding serial congestion.
   if (changed) {
@@ -155,6 +159,20 @@ void stopMotors(const __FlashStringHelper *reason) {
   Serial.println(reason);
 }
 
+void printConfiguration() {
+  Serial.print(F("CONFIG: protocol=2 speed="));
+  Serial.print(driveSpeed);
+  Serial.print(F(" curve="));
+  Serial.print(curveStrength);
+  Serial.println(F(" min=195 max=255"));
+}
+
+void setCurveStrength(uint8_t strength) {
+  curveStrength = constrain(strength, 0, 100);
+  if (currentMotion != STOPPED) applyMotion(currentMotion);
+  printConfiguration();
+}
+
 void setDriveSpeed(uint8_t newSpeed) {
   driveSpeed = constrain(newSpeed, kMinimumSpeed, 255);
 
@@ -165,6 +183,7 @@ void setDriveSpeed(uint8_t newSpeed) {
 
   Serial.print(F("SPEED: "));
   Serial.println(driveSpeed);
+  printConfiguration();
 }
 
 void changeDriveSpeed(int16_t amount) {
@@ -191,6 +210,7 @@ void printStatus() {
   Serial.print(motionName(currentMotion));
   Serial.print(F(" speed="));
   Serial.println(driveSpeed);
+  printConfiguration();
 }
 
 void printHelp() {
@@ -200,7 +220,8 @@ void printHelp() {
   Serial.println(F("  q/e forward curve left/right"));
   Serial.println(F("  z/c backward curve left/right"));
   Serial.println(F("  x or space stop"));
-  Serial.println(F("  +/- speed      1..9 speed level"));
+  Serial.println(F("  +/- PWM by 5   1..9 PWM 195..255"));
+  Serial.println(F("  @c0..100 followed by newline: curve strength"));
   Serial.println(F("  0 stop         ? status         h help"));
   Serial.println(F("Repeat motion commands within 300 ms while driving."));
 }
@@ -273,13 +294,74 @@ void setup() {
   printStatus();
 }
 
-void loop() {
-  while (Serial.available() > 0) {
-    handleCommand(Serial.read());
-  }
+// Framed settings never pass their digits through as movement/speed commands.
+char settingBuffer[5];
+uint8_t settingLength = 0;
+bool readingSetting = false;
+bool discardSetting = false;
+unsigned long settingStartedMs = 0;
 
+void expireMotion() {
   if (currentMotion != STOPPED &&
       millis() - lastMotionCommandMs >= kCommandTimeoutMs) {
     stopMotors(F("TIMEOUT: motors released"));
+  }
+}
+
+void handleSerialChar(char value) {
+  // Stop must remain available even during a partial or malformed setting.
+  if (value == 'x' || value == 'X' || value == ' ') {
+    readingSetting = false;
+    discardSetting = false;
+    handleCommand(value);
+    return;
+  }
+  if (value == '@') {
+    readingSetting = true;
+    discardSetting = false;
+    settingLength = 0;
+    settingStartedMs = millis();
+    return;
+  }
+  if (discardSetting) {
+    if (value == '\n') discardSetting = false;
+    return;
+  }
+  if (!readingSetting) {
+    handleCommand(value);
+    return;
+  }
+  if (value == '\r') return;
+  if (value == '\n') {
+    readingSetting = false;
+    bool valid = settingLength >= 2 && settingBuffer[0] == 'c';
+    uint16_t strength = 0;
+    for (uint8_t i = 1; i < settingLength; ++i) {
+      if (settingBuffer[i] < '0' || settingBuffer[i] > '9') valid = false;
+      else strength = strength * 10 + (settingBuffer[i] - '0');
+    }
+    if (valid && strength <= 100) setCurveStrength(strength);
+    else stopMotors(F("ERROR: invalid curve setting"));
+    return;
+  }
+  if (settingLength >= sizeof(settingBuffer) - 1) {
+    readingSetting = false;
+    discardSetting = true;
+    stopMotors(F("ERROR: setting too long"));
+    return;
+  }
+  settingBuffer[settingLength++] = value;
+}
+
+void loop() {
+  expireMotion();
+  if (readingSetting && millis() - settingStartedMs >= 100) {
+    readingSetting = false;
+    discardSetting = true;
+    stopMotors(F("ERROR: incomplete setting"));
+  }
+  while (Serial.available() > 0) {
+    expireMotion();
+    handleSerialChar(Serial.read());
   }
 }

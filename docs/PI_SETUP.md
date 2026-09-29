@@ -206,3 +206,17 @@ from another device over Wi-Fi.
 No Pi web-controller deployment or service installation was performed at this
 checkpoint. Motor ratings, sustained-load behavior, and power reliability remain
 open hardware checks.
+
+## 2026-09-29: Pi web-controller implementation ready
+
+Added Linux serial discovery, configurable local-network binding, a headless
+launcher, and a runtime-only deployment helper. The existing GUI now uses
+expiring control tokens and ordered commands so one browser owns movement;
+release and connection gaps invalidate that control. The UNO firmware is
+unchanged. See [the Pi guide](../pi/README.md) for deployment and test steps.
+
+Local software verification uses a fake UNO and browser-event tests. Actual Pi
+deployment and motor-powered browser tests are not yet confirmed: key-based
+SSH authentication was unavailable during implementation, so deployment is
+prepared for the user to run with their password entered locally. No boot
+service has been enabled and no physical movement was commanded by these tests.

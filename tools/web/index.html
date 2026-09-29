@@ -22,20 +22,13 @@
       </div>
     </header>
 
-    <section class="notice" role="note">
-      <strong>Bench test mode</strong>
-      Keep the wheels raised. The previous motor tests drew power from Mac USB
-      through the yellow jumper; use this page for communication testing until
-      the separate motor supply is ready.
-    </section>
-
     <div class="control-grid">
       <section class="panel keyboard-panel">
         <div class="panel-heading">
           <p class="section-number">01</p>
           <div>
             <h2>Keyboard</h2>
-            <p id="motion-state">Motors stopped</p>
+            <p id="motion-state">No movement requested</p>
           </div>
         </div>
 
@@ -63,7 +56,7 @@
         </div>
 
         <div class="speed-levels" aria-label="Speed levels">
-          <span>Speed level</span>
+          <span>Drive PWM<br><output id="speed-value">—</output> / 255</span>
           <div class="number-keys">
             <button data-command="1">1</button><button data-command="2">2</button>
             <button data-command="3">3</button><button data-command="4">4</button>
@@ -71,6 +64,13 @@
             <button data-command="7">7</button><button data-command="8">8</button>
             <button data-command="9">9</button>
           </div>
+        </div>
+        <p class="control-hint">Levels 1–9: 195–255 · + / − adjusts by 5</p>
+        <div class="curve-setting">
+          <label for="curve-strength">Curve strength <output id="curve-value">—</output></label>
+          <input id="curve-strength" type="range" min="0" max="100" step="5" value="75" disabled>
+          <div class="range-labels"><span>Gentle</span><span>Sharp</span></div>
+          <p class="control-hint" id="curve-detail">Waiting for UNO settings…</p>
         </div>
       </section>
 

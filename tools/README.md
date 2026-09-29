@@ -54,13 +54,15 @@ stop command and closes the serial port.
 Do not leave Arduino Serial Monitor open at the same time. Only one program can
 own the UNO serial port.
 
-## Next: Pi-hosted control
+## Pi-hosted control
 
-As of 2026-09-28, the user has confirmed motor operation through the Pi's USB
-serial connection to the UNO. The next step is to reuse this controller and
-its existing web assets on the Pi, with browser access from the local network.
-The current loopback binding does not provide that access yet.
+The same controller now supports Linux serial devices and a configurable
+`--host` address. Use [the Pi deployment guide](../pi/README.md) to copy the
+runtime files and launch the server for local Wi-Fi access. The Mac defaults
+remain loopback-only. `--no-browser` supports headless operation.
 
-Follow the [Pi deployment checklist](../docs/PI_SETUP.md#next-milestone-reuse-the-existing-web-gui-on-the-pi)
-for listen-address configuration, stable Linux serial paths, headless startup,
-and stopping/power validation. This is planned work, not a completed deployment.
+Control is granted to one browser at a time through an expiring token. The
+browser continues the existing 100 ms heartbeat; delayed/reordered commands
+are rejected and release invalidates the token. X/Space stops any active
+session. A lost connection requires a fresh press rather than auto-resume.
+After changing server or web files, restart the server and reload the page.

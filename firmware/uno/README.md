@@ -38,9 +38,9 @@ Mac web controller with the wheels raised.
 | `Q` / `E` | Curve forward left / right |
 | `Z` / `C` | Curve backward left / right |
 | `X`, space, or `0` | Stop and release all motors |
-| `+` / `-` | Raise / lower PWM speed by 15 |
-| `1` through `9` | Select a speed level; `9` is full power |
-| `?` | Print current motion and speed |
+| `+` / `-` | Raise / lower PWM speed by 5 |
+| `1` through `9` | Select PWM 195–255; `9` is full power |
+| `?` | Print motion, speed, and protocol-2 configuration |
 | `H` | Print the command list |
 
 Movement commands are case-insensitive. A Mac or Pi keyboard controller must
@@ -63,8 +63,8 @@ hold-to-drive control and sends the required heartbeat.
    connected.
 4. Keep the shield's yellow `PWR` jumper removed. Power the UNO through USB.
    For a powered motor test, connect a verified separate motor battery to
-   `EXT_PWR`, observing its `+` and `GND` labels. The existing four-AA path has
-   not yet powered the shield successfully.
+   `EXT_PWR`, observing its `+` and `GND` labels. The motor pack contains four Duracell alkaline AA batteries in series
+   (6 V nominal); loaded voltage remains unmeasured.
 5. Raise the wheels before uploading or sending a motion command. Open Serial
    Monitor at **9600 baud** for all three sketches.
 
@@ -80,3 +80,21 @@ Motor mapping, with the servo end of the chassis treated as the front:
 Future rover firmware will accept commands from the Raspberry Pi and add
 peripheral readings. Confirm the unknown motor ratings and final power design
 before sustained or loaded driving.
+
+## Tuned controls (2026-09-29)
+
+Default and minimum drive PWM are 195; maximum is 255. Levels 1–9 select
+195, 202, 210, 217, 225, 232, 240, 247, and 255. This is motor duty, not measured
+vehicle speed. Stop still releases all motors.
+
+Send `@c75` followed by newline to set curve strength to 75 percent. Accepted
+values are integers 0–100. Inner PWM is `base * (100 - strength) / 100`, with
+integer truncation. At 0 both sides match; 50 reproduces the old curve; at 100
+the inside motors are released. Default is 75. The reduced inside PWM may be
+below 195 and may stall under load; the base minimum applies to the outside
+wheels. Grip and load determine actual radius. Settings reset on UNO restart.
+
+Configuration commands do not refresh the movement timeout. Malformed or
+incomplete frames stop motion. The web controller requires a protocol-2
+configuration response before permitting movement, so upload this sketch
+before using the updated GUI.

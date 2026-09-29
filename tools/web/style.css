@@ -68,7 +68,8 @@ h1 {
 .connection {
   display: flex;
   align-items: center;
-  min-width: 250px;
+  min-width: 0;
+  max-width: 55%;
   gap: 12px;
   padding: 13px 16px;
   border: 1px solid var(--line);
@@ -103,21 +104,7 @@ h1 {
 .connection small {
   margin-top: 2px;
   color: var(--muted);
-}
-
-.notice {
-  margin-bottom: 18px;
-  padding: 14px 17px;
-  border: 1px solid rgba(255, 180, 84, 0.35);
-  border-radius: 13px;
-  background: rgba(255, 180, 84, 0.08);
-  color: #dfc7a7;
-  line-height: 1.45;
-}
-
-.notice strong {
-  margin-right: 8px;
-  color: var(--amber);
+  overflow-wrap: anywhere;
 }
 
 .control-grid {
@@ -289,7 +276,7 @@ h2 {
 
 .event-panel {
   display: flex;
-  min-height: 100%;
+  min-height: 0;
   flex-direction: column;
   overflow: hidden;
 }
@@ -318,7 +305,9 @@ h2 {
 
 .event-log {
   min-height: 420px;
+  height: 0;
   flex: 1;
+  overflow-anchor: none;
   overflow: auto;
   padding: 12px 18px;
   background: #080c10;
@@ -333,6 +322,7 @@ h2 {
   padding: 5px 0;
   border-bottom: 1px solid rgba(39, 49, 60, 0.45);
   color: #c0cad2;
+  overflow-wrap: anywhere;
 }
 
 .event-time {
@@ -368,6 +358,7 @@ h2 {
 
   .connection {
     min-width: 0;
+    max-width: none;
   }
 
   .event-log {
@@ -402,3 +393,28 @@ h2 {
     gap: 6px;
   }
 }
+
+.control-hint {
+  margin: 10px 0 0;
+  color: var(--muted);
+  font-size: 0.78rem;
+  line-height: 1.5;
+}
+.curve-setting {
+  margin-top: 20px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+}
+.curve-setting label, .range-labels {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+.curve-setting output, #speed-value { color: var(--cyan); }
+.curve-setting input {
+  width: 100%;
+  margin: 16px 0 8px;
+  accent-color: var(--cyan);
+}
+.range-labels { color: var(--muted); font-size: 0.75rem; }
+.number-keys button.selected { border-color: var(--cyan); color: var(--cyan); }

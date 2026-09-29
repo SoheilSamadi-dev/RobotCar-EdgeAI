@@ -17,7 +17,7 @@ piece is still present until the compartments are individually checked.
 | Yellow geared DC motors | 4 | Tested on M1-M4 |
 | Wheels | 4 | Installed; all turn forward |
 | Slotted encoder discs | 4 | Installed; reader sensors not identified |
-| Four-AA holder with switch | 1 | Present, but has not yet powered the shield successfully through `EXT_PWR` |
+| Four-AA holder with switch | 1 | Contains four Duracell alkaline AA cells in series (6 V nominal) for shield `EXT_PWR` |
 | Micro servo mounted on chassis | 1 | Visible in chassis photo; untested |
 | Arduino Nicla Sense ME | 1 | User-owned; planned motion sensing |
 | Raspberry Pi 3 Model B v1.2 with 32 GB microSD | 1 | Confirmed; Debian 13 cleaned for the rover and renamed `robotcar`; mobile power supply pending |
@@ -132,3 +132,9 @@ pin availability.
 - The photo confirms the exact case-label list and visibly shows the remote and
   wiring in the open case. Check the relevant compartment before selecting any
   other component for the rover.
+
+## Latest supply clarification (2026-09-29)
+
+The confirmed motor supply at EXT_PWR is **four Duracell alkaline AA
+batteries in series**, nominally **6 V** (4 × 1.5 V). Loaded voltage remains
+unmeasured. See [battery monitoring](BATTERY_MONITORING.md).

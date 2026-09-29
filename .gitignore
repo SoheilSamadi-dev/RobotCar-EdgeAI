@@ -37,6 +37,7 @@ htmlcov/
 *.hex
 *.bin
 *.map
+*.eep
 
 # Local measurements and model artifacts
 /recordings/

@@ -44,7 +44,7 @@ Wi-Fi, the dashboard, and future AI code.
 flowchart LR
     BANK[5 V USB power bank<br/>2.5 A minimum for Pi 3] -->|Micro-USB power| PI[Raspberry Pi 3]
     PI -->|USB power and serial data| UNO[UNO R3]
-    MOTORBAT[Verified motor battery<br/>candidate: fresh four-AA pack] -->|Motor supply| EXT[Shield EXT_PWR]
+    MOTORBAT[Motor battery: four Duracell alkaline AA<br/>series pack, 6 V nominal] -->|Motor supply| EXT[Shield EXT_PWR]
     UNO -->|5 V logic| SHIELD[HW-130 shield]
     EXT --> SHIELD
     SHIELD --> MOTORS[Four motors]
@@ -56,7 +56,7 @@ Power rules:
   motor supply from the UNO and Pi supply path.
 - Use a compact USB power bank rated for at least 5 V/2.5 A to power the Pi.
 - Let the Pi power the UNO through their USB data cable.
-- Test fresh matched cells in the switched four-AA holder at the shield's
+- Use the four Duracell alkaline AA cells in series in the switched holder at the shield's
   `EXT_PWR` input, with polarity checked against the `+` and `GND` markings.
   Keep this supply provisional until its open-circuit and loaded voltage are
   measured and it starts the motors without the jumper.
